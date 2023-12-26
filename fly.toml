@@ -20,11 +20,10 @@ primary_region = "arn"
   protocol = 'tcp'
   [[services.ports]]
     port = 6379
-
-[[vm]]
-  cpu_kind = "shared"
-  cpus = 1
-  memory_mb = 256
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 10000 # Default redis value
+    soft_limit = 8000
 
 [checks]
   [checks.is_alive]
