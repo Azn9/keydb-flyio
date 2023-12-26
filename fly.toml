@@ -1,6 +1,38 @@
-app = "keydb-multimaster-example"
+# fly.toml app configuration file generated for keydb-multimaster-azn9-test on 2023-12-26T16:59:44+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-[mount]
-source = "keydb_server"
-destination = "/data"
+app = "keydb-multimaster-azn9-test"
+primary_region = "arn"
 
+[build]
+
+[[mounts]]
+  source = "keydb_server"
+  destination = "/data"
+  auto_extend_size_threshold = 0
+  processes = ["app"]
+
+[[services]]
+  internal_port = 6379
+  processes = ["app"]
+  protocol = 'tcp'
+  [[services.ports]]
+    port = 6379
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256
+
+[checks]
+  [checks.is_alive]
+    grace_period = "5s"
+    interval = "5s"
+    port = 6379
+    timeout = "3s"
+    type = "tcp"
+
+[processes]
+  app = "sh -c /fly/start_keydb.sh"
